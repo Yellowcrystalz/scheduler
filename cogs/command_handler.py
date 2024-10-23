@@ -14,13 +14,18 @@ class CommandHandler(commands.Cog):
     async def on_ready(self):
         print(f"{__name__} is online!")
 
+    @app_commands.command(name="help", description="Info on all the / commands")
+    async def help(self, interaction: discord.Interaction):
+        await interaction.response.send_message("help yourself :/")
+
     @app_commands.command(name="availability", description="Check out SWAMP Lab availability")
     @app_commands.describe(date="What day? Leave blank for today")
     async def availability(self, interaction: discord.Interaction, date: str = None):
 
         date = datetime.now().strftime("%Y-%m-%d")
+        date_object = datetime.datetime.strptime(date, "%Y-%m-%d")
 
-        await interaction.response.send_message(date)
+        await interaction.response.send_message(date_object)
 
 
 async def setup(bot):
