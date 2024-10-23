@@ -1,5 +1,5 @@
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 import os
 from dotenv import load_dotenv
 import asyncio
@@ -35,7 +35,7 @@ async def shutdown(ctx):
 async def load():
     for filename in os.listdir("./cogs"):
         if filename.endswith(".py"):
-            await bot.load_extensions(f"cogs.{filename[:-3]}")
+            await bot.load_extension(f"cogs.{filename[:-3]}")
 
 
 async def main():
