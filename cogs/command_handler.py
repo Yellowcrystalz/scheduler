@@ -19,7 +19,7 @@ class CommandHandler(commands.Cog):
         await interaction.response.send_message("help yourself :/")
 
     @app_commands.command(name="availability", description="Check out SWAMP Lab availability")
-    @app_commands.describe(date="What day? Leave blank for today")
+    @app_commands.describe(date="dd-mm-yyyy")
     async def availability(self, interaction: discord.Interaction, date: str = None):
 
         date = datetime.now().strftime("%Y-%m-%d")

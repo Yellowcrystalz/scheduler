@@ -1,54 +1,58 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 
-from database.python.db_manager import DBManager
+from classes.datetime_manager import DTManager as dtm
 
 MAX_BOOKING_TIME = 8
 
 
 class BookingManager():
     def check_booking(start: str, end: str, reserved_slots: list) -> int:
-        start_dt: datetime = await BookingManager.string_to_datetime(start)
-        end_dt: datetime = await BookingManager.string_to_datetime(end)
+        start_dt: datetime = BookingManager.string_to_datetime(start)
+        end_dt: datetime = BookingManager.string_to_datetime(end)
 
-        if not BookingManager.check_timeframe(start_dt, end_dt):
+        if BookingManager.check_timeframe(start_dt, end_dt):
             return -1
 
-        if not BookingManager.check_duration(start_dt, end_dt):
+        if BookingManager.check_duration(start_dt, end_dt):
             return -2
 
-        if not BookingManager.check_conflict(start_dt, end_dt, reserved_slots):
+        if BookingManager.check_conflict(start_dt, end_dt, reserved_slots):
             return -3
 
         return 0
 
     def check_timeframe(start_dt: datetime, end_dt: datetime) -> bool:
-        return start_dt < end_dt
+        return start_dt >= end_dt
 
     def check_duration(start_dt: datetime, end_dt: datetime) -> bool:
-        difference: int = BookingManager.date_difference(start_dt, end_dt)
+        difference: int = dtm.date_difference(start_dt, end_dt)
 
-        return MAX_BOOKING_TIME >= difference
+        return MAX_BOOKING_TIME < difference
 
     def check_conflict(start_dt: datetime, end_dt: datetime, reserved_slots: list) -> bool:
         for slots in reserved_slots:
-            res_start: datetime = BookingManager.string_to_datetime(slots[0])
-            res_end: datetime = BookingManager.string_to_datetime(slots[1])
+            res_start: datetime = dtm.string_to_datetime(slots[0])
+            res_end: datetime = dtm.string_to_datetime(slots[1])
 
             if res_start <= start_dt < res_end:
-                return False
+                return True
             elif res_start < end_dt <= res_end:
-                return False
+                return True
 
-        return True
+        return False
 
-    def string_to_datetime(string_date: str) -> datetime:
-        return datetime.strptime(string_date, "%Y-%m-%d %H:%M")
+    def get_availability(reserved_slots: list, date: str = "today", offset: int = 0) -> list:
+        interval: tuple = dtm.get_interval_utc(date, offset)
+        schedule: list = [0] * 48
 
-    def date_difference(start: datetime, end: datetime) -> int:
-        difference: int = 0
+        for slots in reserved_slots:
+            res_start: datetime = dtm.string_to_datetime(slots[0])
+            res_end: datetime = dtm.string_to_datetime(slots[1])
 
-        delta_difference: timedelta = end - start
-        difference += delta_difference.days * 48
-        difference += int(delta_difference.seconds / 1800)
+            start: int = dtm.date_difference(interval[0], res_start)
+            end: int = dtm.date_difference(interval[0], res_end)
 
-        return difference
+            for i in range(start, end):
+                schedule[i] = 1
+
+        return schedule

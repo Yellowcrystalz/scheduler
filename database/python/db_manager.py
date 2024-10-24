@@ -1,5 +1,7 @@
 import aiosqlite
-from datetime import datetime
+from datetime import datetime, timedelta
+
+from classes.datetime_manager import DTManager as dtm
 
 
 class DBManager():
@@ -23,7 +25,8 @@ class DBManager():
             async with aiosqlite.connect("./database/booker_db.sqlite") as db:
                 await db.execute("PRAGMA foreign_keys = ON")
                 async with db.cursor() as cursor:
-                    await cursor.execute(f"INSERT INTO Room VALUES({id},'{room_number}','{room_name}')")
+                    query = "INSERT INTO Room(R_ID, R_RoomNumber, R_Name) VALUES(?,?,?)"
+                    await cursor.execute(query, (id, room_number, room_name))
 
                 await db.commit()
 
@@ -35,42 +38,32 @@ class DBManager():
             async with aiosqlite.connect("./database/booker_db.sqlite") as db:
                 await db.execute("PRAGMA foreign_keys = ON")
                 async with db.cursor() as cursor:
-                    await cursor.execute(
-                        f"INSERT INTO Booking VALUES('{start_date}','{end_date}','{user_id}','{name}',{room_id})"
-                    )
+                    query = "INSERT INTO Booking(B_StartDate, B_EndDate, B_UserID, B_Name, B_RoomID) Values(?,?,?,?,?)"
+                    await cursor.execute(query, (start_date, end_date, user_id, name, room_id))
 
                 await db.commit()
 
         except Exception as e:
             print(e)
 
-    async def find_todays_bookings():
+    async def find_bookings(date: str = "today", offset: int = 0, expanded: bool = True):
         rows = None
 
-        today = datetime.now().strftime("%Y-%m-%d")
+        interval_dt = dtm.get_interval_utc(date, offset)
+
+        start_str: str = dtm.datetime_to_string(interval_dt[0])
+        end_str: str = dtm.datetime_to_string(interval_dt[1])
+        expanded_str: str = "*" if expanded else "B_StartDate, B_EndDate"
 
         try:
             async with aiosqlite.connect("./database/booker_db.sqlite") as db:
                 async with db.cursor() as cursor:
-                    await cursor.execute(f"SELECT * FROM Booking WHERE B_StartDate LIKE '{today}%'")
-                    rows = await cursor.fetchall()
-
-                await db.commit()
-
-        except Exception as e:
-            print(e)
-
-        return rows
-
-    async def find_todays_bookings_time():
-        rows = None
-
-        today = datetime.now().strftime("%Y-%m-%d")
-
-        try:
-            async with aiosqlite.connect("./database/booker_db.sqlite") as db:
-                async with db.cursor() as cursor:
-                    await cursor.execute(f"SELECT B_StartDate, B_EndDate FROM Booking WHERE B_StartDate LIKE '{today}%'")
+                    query = f"""
+                        SELECT {expanded_str}
+                        FROM Booking
+                        WHERE B_StartDate >= ? AND B_StartDate < ?
+                    """
+                    await cursor.execute(query, (start_str, end_str))
                     rows = await cursor.fetchall()
 
                 await db.commit()
