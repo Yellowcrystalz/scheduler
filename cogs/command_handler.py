@@ -75,15 +75,14 @@ class CommandHandler(commands.Cog):
 
     @app_commands.command(name="availability", description="Check out SWAMP Lab availability")
     @app_commands.describe(date="dd-mm-yyyy")
-    async def availability(self, interaction: discord.Interaction, date: str = "today"):
-        if Parameterizer.check_date(date) and date != "today":
+    async def availability(self, interaction: discord.Interaction, date: str):
+        if Parameterizer.check_date(date):
             await interaction.response.send_message("**ERROR:** Date Format = [MM-DD-YYYY]", ephemeral=True)
             return
 
-
-
-        view = AvailabilityUI()
-        await interaction.response.send_message(content="I", view=view, ephemeral=True)
+        date = Parameterizer.reformat_date(date)
+        view = AvailabilityUI(date)
+        await interaction.response.send_message(embed=view.get_embed(), view=view, ephemeral=True)
 
 
 async def setup(bot):

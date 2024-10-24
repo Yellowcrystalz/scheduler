@@ -2,11 +2,17 @@ from datetime import datetime, timedelta
 
 
 class DTManager():
-    def string_to_datetime(string_date: str) -> datetime:
-        return datetime.strptime(string_date, "%Y-%m-%d %H:%M")
+    def string_to_datetime(string_date: str, expanded: bool = True) -> datetime:
+        if expanded:
+            return datetime.strptime(string_date, "%Y-%m-%d %H:%M")
+        else:
+            return datetime.strptime(string_date, "%Y-%m-%d")
 
-    def datetime_to_string(dt: datetime) -> str:
-        return datetime.strftime(dt, "%Y-%m-%d %H:%M")
+    def datetime_to_string(dt: datetime, expanded: bool = True) -> str:
+        if expanded:
+            return datetime.strftime(dt, "%Y-%m-%d %H:%M")
+        else:
+            return datetime.strftime(dt, "%Y-%m-%d")
 
     def date_difference(start: datetime, end: datetime) -> int:
         difference: int = 0
