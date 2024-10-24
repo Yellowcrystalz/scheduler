@@ -6,37 +6,34 @@ MAX_BOOKING_TIME = 8
 
 
 class BookingManager():
-    def check_booking(start: str, end: str, reserved_slots: list) -> int:
-        start_dt: datetime = BookingManager.string_to_datetime(start)
-        end_dt: datetime = BookingManager.string_to_datetime(end)
-
-        if BookingManager.check_timeframe(start_dt, end_dt):
+    def check_booking(start: datetime, end: datetime, reserved_slots: list) -> int:
+        if BookingManager.check_timeframe(start, end):
             return -1
 
-        if BookingManager.check_duration(start_dt, end_dt):
+        if BookingManager.check_duration(start, end):
             return -2
 
-        if BookingManager.check_conflict(start_dt, end_dt, reserved_slots):
+        if BookingManager.check_conflict(start, end, reserved_slots):
             return -3
 
         return 0
 
-    def check_timeframe(start_dt: datetime, end_dt: datetime) -> bool:
-        return start_dt >= end_dt
+    def check_timeframe(start: datetime, end: datetime) -> bool:
+        return start >= end
 
-    def check_duration(start_dt: datetime, end_dt: datetime) -> bool:
-        difference: int = dtm.date_difference(start_dt, end_dt)
+    def check_duration(start: datetime, end: datetime) -> bool:
+        difference: int = dtm.date_difference(start, end)
 
         return MAX_BOOKING_TIME < difference
 
-    def check_conflict(start_dt: datetime, end_dt: datetime, reserved_slots: list) -> bool:
+    def check_conflict(start: datetime, end: datetime, reserved_slots: list) -> bool:
         for slots in reserved_slots:
             res_start: datetime = dtm.string_to_datetime(slots[0])
             res_end: datetime = dtm.string_to_datetime(slots[1])
 
-            if res_start <= start_dt < res_end:
+            if res_start <= start < res_end:
                 return True
-            elif res_start < end_dt <= res_end:
+            elif res_start < end <= res_end:
                 return True
 
         return False

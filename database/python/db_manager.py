@@ -46,7 +46,7 @@ class DBManager():
         except Exception as e:
             print(e)
 
-    async def find_bookings(date: str = "today", offset: int = 0, expanded: bool = True):
+    async def find_bookings(date: str = "today", offset: int = 0, expanded: bool = True) -> list:
         rows = None
 
         interval_dt = dtm.get_interval_utc(date, offset)
