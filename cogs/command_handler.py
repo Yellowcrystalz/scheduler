@@ -56,7 +56,7 @@ class CommandHandler(commands.Cog):
             start = dtm.datetime_to_string(start_dt)
             end = dtm.datetime_to_string(end_dt)
             await dbm.add_booking(start, end, interaction.user.id, name, 0)
-            await interaction.response.send_message("Booking successful")
+            await interaction.response.send_message("Booking successful", ephemeral=True)
         elif booking_status == -1:
             await interaction.response.send_message(
                 "**ERROR:** The time frame inputted is not possible",
