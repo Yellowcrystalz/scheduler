@@ -62,6 +62,24 @@ class DBManager():
 
         return rows
 
+    async def find_todays_bookings_time():
+        rows = None
+
+        today = datetime.now().strftime("%Y-%m-%d")
+
+        try:
+            async with aiosqlite.connect("./database/booker_db.sqlite") as db:
+                async with db.cursor() as cursor:
+                    await cursor.execute(f"SELECT B_StartDate, B_EndDate FROM Booking WHERE B_StartDate LIKE '{today}%'")
+                    rows = await cursor.fetchall()
+
+                await db.commit()
+
+        except Exception as e:
+            print(e)
+
+        return rows
+
     async def find_my_bookings(user_id: str):
         rows = None
         try:
