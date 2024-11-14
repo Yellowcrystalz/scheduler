@@ -1,11 +1,12 @@
 DROP TABLE IF EXISTS Booking;
-DROP TABLE IF EXISTS Room;
+DROP TABLE IF EXISTS Service;
 
 
-CREATE TABLE Room (
-    R_ID            INTEGER PRIMARY KEY,
-    R_RoomNumber    TEXT,
-    R_Name          TEXT
+CREATE TABLE Service (
+    S_RoomNumber        TEXT,
+    S_Name              TEXT,
+
+    PRIMARY KEY(S_RoomNumber)
 );
 
 CREATE TABLE Booking (
@@ -13,8 +14,8 @@ CREATE TABLE Booking (
     B_EndDate       TEXT,
     B_UserID        TEXT,
     B_Name          TEXT,
-    B_RoomID        INTEGER,
+    B_RoomNumber    TEXT,
 
-    PRIMARY KEY(B_UserID, B_StartDate, B_EndDate, B_RoomID)
-    FOREIGN KEY(B_RoomID) REFERENCES Room(R_ID)
+    PRIMARY KEY(B_UserID, B_StartDate, B_RoomNumber),
+    FOREIGN KEY(B_RoomNumber) REFERENCES Service(S_RoomNumber)
 );
