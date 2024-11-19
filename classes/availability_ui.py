@@ -45,16 +45,16 @@ class AvailabilityUI(discord.ui.View):
                     schedule2 += "\n"
 
                 if i == 0:
-                    suffix = ":regional_indicator_a:"
+                    suffix = "<:am:1308503113707159604>"
                     schedule1 += f"<:twelve:1308264871766396968>{suffix} :one:{suffix} :two:{suffix} :three:{suffix} :four:{suffix} :five:{suffix}\n"
                 elif i == 12:
-                    suffix = ":regional_indicator_a:"
+                    suffix = "<:am:1308503113707159604>"
                     schedule1 += f":six:{suffix} :seven:{suffix} :eight:{suffix} :nine:{suffix} :number_10:{suffix} <:eleven:1308264783040090142>{suffix}\n"
                 elif i == 24:
-                    suffix = ":regional_indicator_p:"
+                    suffix = "<:pm:1308503131386019842>"
                     schedule2 += f"<:twelve:1308264871766396968>{suffix} :one:{suffix} :two:{suffix} :three:{suffix} :four:{suffix} :five:{suffix}\n"
                 elif i == 36:
-                    suffix = ":regional_indicator_p:"
+                    suffix = "<:pm:1308503131386019842>"
                     schedule2 += f":six:{suffix} :seven:{suffix} :eight:{suffix} :nine:{suffix} :number_10:{suffix} <:eleven:1308264783040090142>{suffix}\n"
 
             if i < 24:
