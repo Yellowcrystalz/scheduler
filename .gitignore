@@ -3,3 +3,4 @@
 test*
 __pycache__
 booker_db.sqlite
+.DS_Store
