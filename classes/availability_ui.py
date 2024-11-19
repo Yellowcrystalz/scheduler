@@ -25,37 +25,53 @@ class AvailabilityUI(discord.ui.View):
     def get_embed(self):
         return self.embed
     
-    def set_embed(self, schedule: str):
+    def set_embed(self, schedule1: str, schedule2: str):
         self.embed.clear_fields()
-        self.embed.add_field(name="", value=schedule, inline=False)
+        self.embed.add_field(name="", value=schedule1, inline=False)
+        self.embed.add_field(name="", value=schedule2, inline=False)
 
 
     def availability_to_embed(self, availability_slots: list):
-        schedule: str = ""
+        schedule1: str = ""
+        schedule2: str = ""
 
         for i in range(len(availability_slots)):
             if i % 12 == 0:
-                schedule += ("—" * 21)
-                schedule += "\n"
+                if i < 24:
+                    schedule1 += ("—" * 21)
+                    schedule1 += "\n"
+                else:
+                    schedule2 += ("—" * 21)
+                    schedule2 += "\n"
 
                 if i == 0:
-                    schedule += ":one::two: :one: :two: :three: :four: :five:\n"
+                    suffix = ":regional_indicator_a:"
+                    schedule1 += f"<:twelve:1308264871766396968>{suffix} :one:{suffix} :two:{suffix} :three:{suffix} :four:{suffix} :five:{suffix}\n"
                 elif i == 12:
-                    schedule += ":six: :seven: :eight: :nine: :number_10: :one::one:\n"
+                    suffix = ":regional_indicator_a:"
+                    schedule1 += f":six:{suffix} :seven:{suffix} :eight:{suffix} :nine:{suffix} :number_10:{suffix} <:eleven:1308264783040090142>{suffix}\n"
                 elif i == 24:
-                    schedule += ":one::two: :one: :two: :three: :four: :five:\n"
+                    suffix = ":regional_indicator_p:"
+                    schedule2 += f"<:twelve:1308264871766396968>{suffix} :one:{suffix} :two:{suffix} :three:{suffix} :four:{suffix} :five:{suffix}\n"
                 elif i == 36:
-                    schedule += ":six: :seven: :eight: :nine: :number_10: :one::one:\n"
+                    suffix = ":regional_indicator_p:"
+                    schedule2 += f":six:{suffix} :seven:{suffix} :eight:{suffix} :nine:{suffix} :number_10:{suffix} <:eleven:1308264783040090142>{suffix}\n"
 
-            if(availability_slots[i] == 0):
-                schedule += ":green_square:"
+            if i < 24:
+                schedule1 += ":green_square:" if availability_slots[i] == 0 else ":red_square:"
             else:
-                schedule += ":red_square:"
+                schedule2 += ":green_square:" if availability_slots[i] == 0 else ":red_square:"
 
             if (i % 12) % 2 == 1:
-                schedule += " "
+                if i < 24:
+                    schedule1 += " "
+                else:
+                    schedule2 += " "
 
             if i % 12 == 11:
-                schedule += "\n"
+                if i < 24:
+                    schedule1 += "\n"
+                else:
+                    schedule2 += "\n"
         
-        self.set_embed(schedule)
+        self.set_embed(schedule1, schedule2)

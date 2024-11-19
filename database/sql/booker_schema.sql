@@ -3,8 +3,8 @@ DROP TABLE IF EXISTS Service;
 
 
 CREATE TABLE Service (
-    S_RoomNumber        TEXT,
-    S_Name              TEXT,
+    S_RoomNumber    TEXT,
+    S_Name          TEXT,
 
     PRIMARY KEY(S_RoomNumber)
 );
